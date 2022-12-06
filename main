@@ -1,0 +1,32 @@
+ from bs4 import BeautifulSoup
+import requests
+import pandas as pd
+
+fd = open('****.xml', 'r', encoding='utf-8')
+
+xml_file = fd.read()
+soup = BeautifulSoup(xml_file, features='lxml-xml')
+#print(soup)
+
+
+nid = soup.find_all('field', {'name': 'nid'})
+date = soup.find_all('field', {'name': 'publ_date'})
+title = soup.find_all('field', {'name': 'news_title'})
+text = soup.find_all('field', {'name': 'news_text'})
+
+currencies = []
+for i in range(0, len(nid)):
+    rows = [nid[i].get_text(),
+           date[i].get_text(),
+           title[i].get_text(),
+           text[i].get_text()]
+    currencies.append(rows)
+
+#display(currencies[:4])
+
+news = pd.DataFrame(currencies,
+                    columns=['Nid','Date','Title','Text'],
+                    dtype=float)
+
+news.to_excel('*****.xlsx',
+              index=False)
